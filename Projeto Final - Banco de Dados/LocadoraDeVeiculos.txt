@@ -1,0 +1,248 @@
+-- MySQL Workbench Synchronization
+-- Generated: 2017-12-13 13:48
+-- Model: New Model
+-- Version: 1.0
+-- Project: Name of the project
+-- Author: adriano.anschau
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`timestamps` (
+  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` TIMESTAMP NULL DEFAULT NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`` (
+  `username` VARCHAR(16) NOT NULL,
+  `email` VARCHAR(255) NULL DEFAULT NULL,
+  `password` VARCHAR(32) NOT NULL,
+  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`veiculos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `marcas_id` INT(11) NOT NULL,
+  `categorias_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_veiculos_marcas_idx` (`marcas_id` ASC),
+  INDEX `fk_veiculos_categorias1_idx` (`categorias_id` ASC),
+  CONSTRAINT `fk_veiculos_marcas`
+    FOREIGN KEY (`marcas_id`)
+    REFERENCES `mydb`.`marcas` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_veiculos_categorias1`
+    FOREIGN KEY (`categorias_id`)
+    REFERENCES `mydb`.`categorias` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`template` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`veiculo` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`marcas` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`categorias` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`precos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `veiculos_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_precos_veiculos1_idx` (`veiculos_id` ASC),
+  CONSTRAINT `fk_precos_veiculos1`
+    FOREIGN KEY (`veiculos_id`)
+    REFERENCES `mydb`.`veiculos` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`clientes` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`funcionarios` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`locacoes` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `clientes_id` INT(11) NOT NULL,
+  `funcionarios_id` INT(11) NOT NULL,
+  `reservas_veiculos_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_agenda_locacoes_clientes1_idx` (`clientes_id` ASC),
+  INDEX `fk_agenda_locacoes_funcionarios1_idx` (`funcionarios_id` ASC),
+  INDEX `fk_locacoes_reservas_veiculos1_idx` (`reservas_veiculos_id` ASC),
+  CONSTRAINT `fk_agenda_locacoes_clientes1`
+    FOREIGN KEY (`clientes_id`)
+    REFERENCES `mydb`.`clientes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_agenda_locacoes_funcionarios1`
+    FOREIGN KEY (`funcionarios_id`)
+    REFERENCES `mydb`.`funcionarios` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_locacoes_reservas_veiculos1`
+    FOREIGN KEY (`reservas_veiculos_id`)
+    REFERENCES `mydb`.`reservas_veiculos` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`manutencoes` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `funcionarios_id` INT(11) NOT NULL,
+  `locacoes_id` INT(11) NULL DEFAULT NULL,
+  `reservas_veiculos_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_agenda_manutencoes_funcionarios1_idx` (`funcionarios_id` ASC),
+  INDEX `fk_manutencoes_locacoes1_idx` (`locacoes_id` ASC),
+  INDEX `fk_manutencoes_reservas_veiculos1_idx` (`reservas_veiculos_id` ASC),
+  CONSTRAINT `fk_agenda_manutencoes_funcionarios1`
+    FOREIGN KEY (`funcionarios_id`)
+    REFERENCES `mydb`.`funcionarios` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_manutencoes_locacoes1`
+    FOREIGN KEY (`locacoes_id`)
+    REFERENCES `mydb`.`locacoes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_manutencoes_reservas_veiculos1`
+    FOREIGN KEY (`reservas_veiculos_id`)
+    REFERENCES `mydb`.`reservas_veiculos` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`contas_a_receber` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `agenda_locacoes_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_contas_a_receber_agenda_locacoes1_idx` (`agenda_locacoes_id` ASC),
+  CONSTRAINT `fk_contas_a_receber_agenda_locacoes1`
+    FOREIGN KEY (`agenda_locacoes_id`)
+    REFERENCES `mydb`.`locacoes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`contas_a_pagar` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `manutencoes_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_contas_a_pagar_manutencoes1_idx` (`manutencoes_id` ASC),
+  CONSTRAINT `fk_contas_a_pagar_manutencoes1`
+    FOREIGN KEY (`manutencoes_id`)
+    REFERENCES `mydb`.`manutencoes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`contratos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `agenda_locacoes_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_contrato_agenda_locacoes1_idx` (`agenda_locacoes_id` ASC),
+  CONSTRAINT `fk_contrato_agenda_locacoes1`
+    FOREIGN KEY (`agenda_locacoes_id`)
+    REFERENCES `mydb`.`locacoes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`boletos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `clientes_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_boletos_clientes1_idx` (`clientes_id` ASC),
+  CONSTRAINT `fk_boletos_clientes1`
+    FOREIGN KEY (`clientes_id`)
+    REFERENCES `mydb`.`clientes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`imagens_veiculos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `veiculos_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_imagens_veiculos_veiculos1_idx` (`veiculos_id` ASC),
+  CONSTRAINT `fk_imagens_veiculos_veiculos1`
+    FOREIGN KEY (`veiculos_id`)
+    REFERENCES `mydb`.`veiculos` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`reservas_veiculos` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `descricao` VARCHAR(255) NOT NULL,
+  `veiculos_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_reservas_veiculos_veiculos1_idx` (`veiculos_id` ASC),
+  CONSTRAINT `fk_reservas_veiculos_veiculos1`
+    FOREIGN KEY (`veiculos_id`)
+    REFERENCES `mydb`.`veiculos` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
