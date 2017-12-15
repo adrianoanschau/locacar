@@ -10,4 +10,5 @@
     <li>3 - popular.sql</li>
 </ul>
 
-<p>Foi criada uma aplicação em PHP para utilizar o sistema, esta aplicação está em funcionamento em <a href="http://adriano.work/projeto-final-banco-de-dados">http://adriano.work/projeto-final-banco-de-dados</a></p>
+<p>Criei uma aplicação em PHP para usar o sistema afim de tornar mais prático o desenvolvimento.</p>
+<p>Para fazer uso apenas é necessário colocar os arquivos de extensão .php deste repositório em um servidor apache e configurar um banco de dados em PostgreSQL de acordo com os dados de acesso do arquivo 'startup.php' e acessar o projeto em um navegador.</p>
