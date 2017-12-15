@@ -135,5 +135,30 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION receberPagamento(codigoBarras CHARACTER VARYING(32))
+	RETURNS BOOLEAN AS $$
+DECLARE
+	boleto RECORD;
+BEGIN
+	SELECT * INTO boleto FROM contas_a_receber WHERE codigo_barras = codigoBarras;
+	IF boleto.pago=false THEN
+		UPDATE contas_a_receber SET pago = true WHERE codigo_barras = codigoBarras;
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
 
-
+CREATE OR REPLACE FUNCTION fazerPagamento(codigoBarras CHARACTER VARYING(32))
+	RETURNS BOOLEAN AS $$
+DECLARE
+	boleto RECORD;
+BEGIN
+	SELECT * INTO boleto FROM contas_a_pagar WHERE codigo_barras = codigoBarras;
+	IF boleto.pago=false THEN
+		UPDATE contas_a_pagar SET pago = true WHERE codigo_barras = codigoBarras;
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;

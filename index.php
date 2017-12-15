@@ -27,7 +27,7 @@ $stmt->execute(array(':id'=>1));
         <li><a href="?reservasDoDia">Ver Reservas do Dia</a></li>
         <li><a href="?reservasProximas">Ver Reservas Próximas</a></li>
         <br>
-        <li>Cadastrar</li>
+        <li>Cadastro</li>
         <li><a href="cadastrarCliente.php">Novo Cliente</a></li>
         <li><a href="cadastrarFuncionario.php">Novo Funcionário</a></li>
         <br>
@@ -146,6 +146,7 @@ $stmt->execute(array(':id'=>1));
                     <th>Descrição</th>
                     <th>Valor</th>
                     <th>Código Barras</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -158,6 +159,7 @@ $stmt->execute(array(':id'=>1));
                     <td><?=$row['descricao']?></td>
                     <td><?=$row['valor']?></td>
                     <td><?=$row['codigo_barras']?></td>
+                    <td><a href="?receberPagamento=<?=$row['codigo_barras']?>">Receber Pagamento</a></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -177,6 +179,7 @@ $stmt->execute(array(':id'=>1));
                 <th>Descrição</th>
                 <th>Valor</th>
                 <th>Código Barras</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -189,11 +192,38 @@ $stmt->execute(array(':id'=>1));
                 <td><?=$row['descricao']?></td>
                 <td><?=$row['valor']?></td>
                 <td><?=$row['codigo_barras']?></td>
+                <td><a href="?fazerPagamento=<?=$row['codigo_barras']?>">Fazer Pagamento</a></td>
             </tr>
         <?php } ?>
         </tbody>
         </table>
     <?php } ?>
+
+    <?php if(isset($_GET['receberPagamento'])){
+        $sql = "SELECT receberPagamento('{$_GET['receberPagamento']}')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        if($stmt->fetchAll()[0]['receberpagamento']){
+            echo "<strong>Pagamento recebido.</strong>";
+        } else {
+            echo "<strong>Houve um erro para receber o pagamento.</strong>";
+        }
+        
+    } ?>
+    
+    <?php if(isset($_GET['fazerPagamento'])){
+        $sql = "SELECT fazerPagamento('{$_GET['fazerPagamento']}')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        if($stmt->fetchAll()[0]['fazerpagamento']){
+            echo "<strong>Pagamento realizado.</strong>";
+        } else {
+            echo "<strong>Houve um erro para fazer o pagamento.</strong>";
+        }
+        
+    } ?>
 
 </body>
 </html>
