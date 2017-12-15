@@ -11,8 +11,24 @@ CREATE VIEW reservasProximas AS SELECT c.nome AS Cliente,v.descricao AS Veiculo,
 	LEFT JOIN clientes c ON c.id=r.clientes_id LEFT JOIN reservas_finalidade rf ON rf.id=r.reservas_finalidade_id
 	LEFT JOIN veiculos v ON v.id=r.veiculos_id WHERE r.dataRetirada > (NOW())::date ORDER BY r.dataRetirada LIMIT 10;
 
-CREATE VIEW contasParaReceber AS SELECT * FROM contas_a_receber WHERE pago = false;
-CREATE VIEW contasParaPagar AS SELECT * FROM contas_a_pagar WHERE pago = false;
+CREATE VIEW contasParaReceber AS SELECT
+	cr.descricao,cr.codigo_barras,cr.valor,c.nome AS Cliente,v.descricao AS Veiculo,f.nome AS Funcionario,i.descricao AS Finalidade
+	FROM contas_a_receber cr
+	LEFT JOIN reservas_veiculos r ON r.id=cr.reservas_veiculos_id
+	LEFT JOIN clientes c ON c.id=r.clientes_id
+	LEFT JOIN veiculos v ON v.id=r.veiculos_id
+	LEFT JOIN funcionarios f ON f.id=r.funcionarios_id
+	LEFT JOIN reservas_finalidade i ON i.id=r.reservas_finalidade_id
+	WHERE cr.pago = false;
+CREATE VIEW contasParaPagar AS SELECT
+	cp.descricao,cp.codigo_barras,cp.valor,c.nome AS Cliente,v.descricao AS Veiculo,f.nome AS Funcionario,i.descricao AS Finalidade
+	FROM contas_a_pagar cp
+	LEFT JOIN reservas_veiculos r ON r.id=cp.reservas_veiculos_id
+	LEFT JOIN clientes c ON c.id=r.clientes_id
+	LEFT JOIN veiculos v ON v.id=r.veiculos_id
+	LEFT JOIN funcionarios f ON f.id=r.funcionarios_id
+	LEFT JOIN reservas_finalidade i ON i.id=r.reservas_finalidade_id
+	WHERE cp.pago = false;
 
 CREATE OR REPLACE FUNCTION veiculoTemReserva(id_veiculo INTEGER, dataRetirar DATE, dataDevolver DATE) RETURNS BOOLEAN AS $$
 DECLARE
